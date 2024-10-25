@@ -1,0 +1,13 @@
+set system host-name {{ HOSTNAME }}
+{% if OSPF is defined %}
+delete protocols ospf
+{% for line in OSPF %}
+set protocols ospf area {{ line["area"] }} interface {{ line["interface"] }}
+{% endfor %}
+{% for line in SNMP %}
+set snmp community {{ line["community"]}}
+{% endfor %}
+{% if BGP["ASN_TYPE"] == "private" %}
+set protocols bgp local-as {{ BGP["ASN" ]}}
+{% endif %}
+commit

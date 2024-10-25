@@ -1,0 +1,16 @@
+---
+HOSTNAME: R1
+
+OSPF:
+  - interface: "ge-0/0/1.0"
+    area: 0
+  - interface: "ge-0/0/2.0"
+    area: 0
+
+SNMP:
+  - community: "R1-COMMUNITY1"
+  - community: "R1-COMMUNITY2"
+
+BGP:
+  ASN: "65001"
+  ASN_TYPE: "private"

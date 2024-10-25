@@ -1,0 +1,16 @@
+---
+HOSTNAME: R2
+
+OSPF:
+  - interface: "ge-0/0/1.0"
+    area: 0
+  - interface: "ge-0/0/2.0"
+    area: 0
+
+SNMP:
+  - community: "R2-COMMUNITY1"
+  - community: "R2-COMMUNITY2"
+
+BGP:
+  ASN: "5"
+  ASN_TYPE: "public"
