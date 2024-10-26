@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Math Practice</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Math Practice</h1>
+    <form id="num-digits-form">
+        <label for="num-digits">Choose the number of digits:</label>
+        <select id="num-digits" name="num-digits">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <label for="operation">Choose the operation:</label>
+        <select id="operation" name="operation">
+            <option value="addition">Addition</option>
+            <option value="subtraction">Subtraction</option>
+        </select>
+        <button id="submit-btn">Submit</button>
+    </form>
+    <div id="problem-container"></div>
+    <form id="answer-form">
+        <input type="text" id="answer-input" placeholder="Enter your answer">
+        <button id="check-answer-btn">Check Answer</button>
+        <button id="next-question-btn">Next Question</button>
+    </form>
+    <div id="result-container"></div>
+    <div id="scoreboard-container">
+        <h2>Scoreboard:</h2>
+        <p id="score">Score: 0/0</p>
+        <p id="correct-answers">Correct Answers: 0</p>
+        <p id="incorrect-answers">Incorrect Answers: 0</p>
+    </div>
+    <div id="timer-container">
+        <p id="timer">5 seconds before next question</p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var score = 0;
+            var totalQuestions = 0;
+            var correctAnswers = 0;
+            var incorrectAnswers = 0;
+            var timer = 5;
+
+            // Submit num digits form
+            $("#submit-btn").click(function(event) {
+                event.preventDefault();
+                var numDigits = $("#num-digits").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/generate_problem",
+                    data: JSON.stringify({num_digits: numDigits}),
+                    contentType: "application/json",
+                    success: function(data) {
+                        $("#problem-container").html(data.problem);
+                    }
+                });
+            });
+
+            // Check answer form
+            $("#check-answer-btn").click(function(event) {
+                event.preventDefault();
+                var userAnswer = $("#answer-input").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/check_answer",
+                    data: JSON.stringify({user_answer: userAnswer}),
+                    contentType: "application/json",
+                    success: function(data) {
+                        $("#result-container").html(data.result);
+                        if (data.result === "Correct!") {
+                            correctAnswers++;
+                            score++;
+                        } else {
+                            incorrectAnswers++;
+                        }
+                        totalQuestions++;
+                        updateScoreboard();
+                        timer = 5;
+                        startTimer();
+                    }
+                });
+            });
+
+            // Next question button
+            $("#next-question-btn").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/generate_problem",
+                    data: JSON.stringify({num_digits: $("#num-digits").val()}),
+                    contentType: "application/json",
+                    success: function(data) {
+                        $("#problem-container").html(data.problem);
+                        $("#answer-input").val("");
+                        $("#result-container").html("");
+                    }
+                });
+            });
+
+            function updateScoreboard() {
+                $("#score").html("Score: " + score + "/" + totalQuestions);
+                $("#correct-answers").html("Correct Answers: " + correctAnswers);
+                $("#incorrect-answers").html("Incorrect Answers: " + incorrectAnswers);
+            }
+
+            function startTimer() {
+                var interval = setInterval(function() {
+                    timer--;
+                    $("#timer").html(timer + " seconds before next question");
+                    if (timer === 0) {
+                        clearInterval(interval);
+                        $.ajax({
+                            type: "POST",
+                            url: "/generate_problem",
+                            data: JSON.stringify({num_digits: $("#num-digits").val()}),
+                            contentType: "application/json",
+                            success: function(data) {
+                                $("#problem-container").html(data.problem);
+                                $("#answer-input").val("");
+                                $("#result-container").html("");
+                            }
+                        });
+                    }
+                }, 1000);
+            }
+
+            startTimer();
+        });
+    </script>
+</body>
+</html>
