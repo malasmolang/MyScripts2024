@@ -1,0 +1,27 @@
+devices:
+  R1:
+    connections:
+      cli:
+        ip: 172.25.11.1
+        protocol: ssh
+    credentials:
+      default:
+        password: lab123
+        username: lab
+      enable:
+        password: lab123
+    os: junos
+    type: junos
+  R2:
+    connections:
+      cli:
+        ip: 172.25.11.2
+        protocol: ssh
+    credentials:
+      default:
+        password: lab123
+        username: lab
+      enable:
+        password: lab123
+    os: junos
+    type: junos

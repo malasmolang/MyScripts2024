@@ -1,0 +1,8 @@
+pip3 install pyats[full]
+pyats create testbed file --path topology.csv --output testbed.yml
+
+# LEARN and save in config1 directory
+pyats learn config --testbed-file testbed.yml --output config1
+
+# DIFF checks the diff between the 2 folders and saves it in mydiff directory
+pyats diff config1/ config2/ --output /mydiff

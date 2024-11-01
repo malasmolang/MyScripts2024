@@ -1,0 +1,1 @@
+ssh -p 830 -i JUNOS_auto_id_rsa auto@172.25.11.1 -s netconf
